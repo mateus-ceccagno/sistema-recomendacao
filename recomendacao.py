@@ -1,3 +1,14 @@
+# EXEMPLO DE EXECUÇÂO:
+	# Inicie o terminal na pasta do projeto
+	# e digite os seguintes comandos:
+		# python
+		# from recomendacacao import * 
+		# getRecomend(baseML(), '212')
+	
+	#RESULTADO:
+		# O resultado será os 30 filmes mais recomendados para o usuário '212'
+
+
 avUsuarios = {'Ana': 
 		{'Freddy x Jason': 2.5, 
 		 'O Ultimato Bourne': 3.5,
@@ -96,9 +107,18 @@ avFilmes = {'Freddy x Jason':
 		 'Janaina': 3.0}
 }
 
-from math import sqrt
 
+
+from math import sqrt
 def dist(base, key1, key2):
+	# Essa função retorna a distância euclidiana entre perfis de usuários, ou seja,
+	# quanto maior a distância menos semelhantes são os perfis
+
+	# PARAMETROS:
+	# base = avUsuario ou avFilmes ou BaseML()
+	# key1 e key2 = escolha algum item do tipo chave dentro da base escolhida
+
+
     contItems = {}
     for item in base[key1]:
        if item in base[key2]: contItems[item] = 1
@@ -109,14 +129,26 @@ def dist(base, key1, key2):
                 for item in base[key1] if item in base[key2]])
     return 1/(1 + sqrt(soma))
 
+
 def getSimilar(base, key):
+	#Guardar e apresentar os 30 mais similares
+
+	#PARAMETROS:
+	#base = avUsuario ou avFilmes ou BaseML()
+	#key = item do tipo chave dentro da base escolhida
+
     similar = [(dist(base, key, other), other)
                     for other in base if other != key]
     similar.sort()
     similar.reverse()
     return similar[0:30]
     
+
 def getRecomend(base, key):
+	# Recomendação dos 30 filmes que o usuário(key) possívelmente
+	# irá mais gostar
+
+	#Experimente utilizar (base = baseML(), key = '1233')
     totais={}
     contSimilar={}
     for other in base:
@@ -136,7 +168,9 @@ def getRecomend(base, key):
     rankings.reverse()
     return rankings[0:30]
                 
-def baseML(path='C:/ml-100k'):
+def baseML(path='ml-100k'):
+	#leitura da conjunto de dados da MovieLens
+
     filmes = {}
     for linha in open(path + '/u.item'):
         (id, titulo) = linha.split('|')[0:2]
@@ -150,14 +184,16 @@ def baseML(path='C:/ml-100k'):
         base[user][filmes[idfilme]] = float(nota)
     return base            
 
-def setItems(base):
+
+#### Pró-perfomance. Código-fonte em que a parte da recomendação é pré-computada.
+def setItems(base): #guarde essa função em uma varíavel
     result = {}
     for item in base:
         notas = getSimilar(base, item)
         result[item] = notas
     return result
 
-def getItems(base, similaridadeItens, usuario):
+def getItems(base, similaridadeItens, usuario): #similaridadeItens deve ser utilizada a varíavel antes guardada
     notasUsuario = base[usuario]
     notas={}
     totalSimilaridade={}
